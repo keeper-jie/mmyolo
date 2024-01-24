@@ -37,7 +37,13 @@ class EngineBuilder:
                        scale: Optional[List[List]] = None,
                        fp16: bool = True,
                        with_profiling: bool = True) -> None:
-        logger = trt.Logger(trt.Logger.WARNING)
+        # The `# ` is used to indicate a comment in the code. It is not a valid syntax and
+        # should be removed in order for the code to run without any errors.
+        # `trt` is a module that stands for TensorRT, which is a deep learning inference
+        # optimizer and runtime library developed by NVIDIA. It is used to optimize and
+        # accelerate the inference process of deep learning models on NVIDIA GPUs. In this
+        # code, `trt` is used to build a TensorRT engine from an ONNX file.
+        logger =  trt.Logger(trt.Logger.WARNING)
         trt.init_libnvinfer_plugins(logger, namespace='')
         builder = trt.Builder(logger)
         config = builder.create_builder_config()

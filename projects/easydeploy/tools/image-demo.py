@@ -97,11 +97,16 @@ def main():
         pad_param = samples.get('pad_param',
                                 np.array([0, 0, 0, 0], dtype=np.float32))
         h, w = samples.get('ori_shape', rgb.shape[:2])
-        pad_param = torch.asarray(
-            [pad_param[2], pad_param[0], pad_param[2], pad_param[0]],
-            device=args.device)
+        pad_param = torch.from_numpy(  # AttributeError: module 'torch' has no attribute 'asarray'  # https://github.com/open-mmlab/mmyolo/issues/696
+            np.array([pad_param[2], pad_param[0], pad_param[2], pad_param[0]])).to(args.device)  
+        # File "projects/easydeploy/tools/image-demo.py", line 118, in main
+        #     bboxes -= pad_param
+        # RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
         scale_factor = samples.get('scale_factor', [1., 1])
-        scale_factor = torch.asarray(scale_factor * 2, device=args.device)
+        scale_factor = torch.from_numpy(np.array([scale_factor * 2])).to(args.device) 
+        # File "projects/easydeploy/tools/image-demo.py", line 122, in main
+        #     bboxes /= scale_factor
+        # RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!
         data = pre_pipeline(data).to(args.device)
 
         result = model(data)

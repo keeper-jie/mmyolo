@@ -210,19 +210,32 @@ train_dataloader = dict(
         filter_cfg=dict(filter_empty_gt=False, min_size=32),
         pipeline=train_pipeline))
 
+# test_pipeline = [
+#     dict(type='LoadImageFromFile', backend_args=_base_.backend_args),
+#     dict(type='YOLOv5KeepRatioResize', scale=img_scale),
+#     dict(
+#         type='LetterResize',
+#         scale=img_scale,
+#         allow_scale_up=False,
+#         pad_val=dict(img=114)),
+#     dict(type='LoadAnnotations', with_bbox=True, _scope_='mmdet'),
+#     dict(
+#         type='mmdet.PackDetInputs',
+#         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
+#                    'scale_factor', 'pad_param'))
+# ]
+
+# change for view feature map
 test_pipeline = [
-    dict(type='LoadImageFromFile', backend_args=_base_.backend_args),
-    dict(type='YOLOv5KeepRatioResize', scale=img_scale),
     dict(
-        type='LetterResize',
-        scale=img_scale,
-        allow_scale_up=False,
-        pad_val=dict(img=114)),
+        type='LoadImageFromFile',
+        backend_args=_base_.backend_args),
+    dict(type='mmdet.Resize', scale=img_scale, keep_ratio=False), # 删除 YOLOv5KeepRatioResize, 将 LetterResize 修改成 mmdet.Resize
     dict(type='LoadAnnotations', with_bbox=True, _scope_='mmdet'),
     dict(
         type='mmdet.PackDetInputs',
         meta_keys=('img_id', 'img_path', 'ori_shape', 'img_shape',
-                   'scale_factor', 'pad_param'))
+                   'scale_factor'))  # 删除 pad_param
 ]
 
 val_dataloader = dict(
